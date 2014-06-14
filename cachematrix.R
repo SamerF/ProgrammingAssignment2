@@ -1,5 +1,4 @@
-## Put comments here that give an overall description of what your
-## functions do
+## overall description of what your functions do
 
 ## Matrix inversion is usually a costly computation and their may be some benefit to caching the inverse of a matrix rather than compute it repeatedly (there are also alternatives to matrix inversion that we will not discuss here). Your assignment is to write a pair of functions that cache the inverse of a matrix.
 ## 
@@ -12,29 +11,39 @@
 ## For this assignment, assume that the matrix supplied is always invertible
 
 
-## Write a short comment describing this function
+
+## short comment describing this function
 # 1.makeCacheMatrix: This function creates a special "matrix" object that can cache its inverse.
-
-
 makeCacheMatrix <- function(p = matrix()) {
   
-  #########m <- NULL 
+  # notes:
+  # this function defines 2 global variables:
+  # x is the original matrix
+  # m is the inverted matrix
+  
+  
+  ### define the set function
   set <- function(y) {
     x <<- y
     m <<- NULL
   }
+  
+  ### define the get function
   get <- function() x
-  setSolve <- function() {     
-    m <<- solve(x)
+  
+  ### define the setSolve function
+  setSolve <- function(inverted) {     
+    m <<- inverted
     message("Calculated")
   }
+  
+  ### define the getSolve function
   getSolve <- function() m
+  
+  ### construct the returned list
   list(set = set, get = get,
        setSolve = setSolve,
        getSolve = getSolve)
-  
-  # x is the matrix
-  # m is the inverted matrix
   
 }
 
@@ -46,19 +55,30 @@ makeCacheMatrix <- function(p = matrix()) {
 # from the cache.
 
 cacheSolve <- function(p, ...) {
+  ##### this function Returns a matrix that is the inverse of 'x'
   
-  ## Return a matrix that is the inverse of 'x'
-  #print(1)
+  ### get the inverted matrix
   localm <- p$getSolve()
-  #print(2)
-  if(identical(x,p$get()) && !is.null(localm)) {
+  
+  ### check if we already have the inverted matrix
+  #ignore this >>>>>> if(identical(x,p$get()) && !is.null(localm)) {
+  if(!is.null(localm)) {
+    # We already have inverted matrix
     message("getting cached data")
     message("inverted matrix:")
     print(localm)
     return(localm)
   }
+  
+  ### DO NOT have inverted matrix. section below calculates inverted matrix
+  # get the original matrix
   data <- p$get()
-  p$setSolve()
+  # calculate inverted matrix
+  inverted <- solve(data)
+  # set the global variable m
+  p$setSolve(inverted)
+  
+  ### print and exit
   message("inverted matrix:")
   print(m)
   
